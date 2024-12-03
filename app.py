@@ -12,7 +12,7 @@ model = load_model('models/trainedModel.h5')
 
 class_names = ['Touhid', 'Tishad', 'Shimla', 'Abir']
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
 
 def gen_frames():
     
