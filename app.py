@@ -38,6 +38,7 @@ def gen_frames():
                 max_index = np.argmax(prediction[0])
                 confidence = prediction[0][max_index] * 100
                 
+                # Check confidence level
                 if confidence >= 60:
                     predicted_class = class_names[max_index]
                 else:
@@ -60,4 +61,4 @@ def video():
     return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    app.run(debug=True)
