@@ -3,6 +3,7 @@ import numpy as np
 from flask import Flask, render_template, Response
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
+import os
 
 app = Flask(__name__)
 
@@ -14,10 +15,13 @@ class_names = ['Touhid', 'Tishad', 'Shimla', 'Abir']
 
 cap = cv2.VideoCapture(1)
 
+if not cap.isOpened():
+    print("Warning: Camera not accessible. Using fallback video.")
+    cap = cv2.VideoCapture('static/sample_video.mp4')  
+
 def gen_frames():
-    
     while True:
-        success,frame = cap.read()
+        success, frame = cap.read()  
         if not success:
             break
         else:
@@ -26,24 +30,26 @@ def gen_frames():
             faces = face_cascade.detectMultiScale(gray, 1.1, 4)
 
             for (x, y, w, h) in faces:
-
+    
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-                face_roi = frame[y:y+h, x:x+w]
-                
+               
+                face_roi = frame[y:y + h, x:x + w]
                 face_img = cv2.cvtColor(face_roi, cv2.COLOR_BGR2RGB)
-                face_img = cv2.resize(face_img, (64, 64))  #64x64
+                face_img = cv2.resize(face_img, (64, 64))
                 face_img = image.img_to_array(face_img)
                 face_img = np.expand_dims(face_img, axis=0)
                 face_img = face_img / 255.0  
 
+    
                 prediction = model.predict(face_img)
                 max_index = np.argmax(prediction[0])  
                 predicted_class = class_names[max_index]
                 confidence = prediction[0][max_index] * 100 
 
                 label = f"{predicted_class} ({confidence:.2f}%)"
-                cv2.putText(frame, label, (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+                cv2.putText(frame, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+
 
             ret, buffer = cv2.imencode('.jpg', frame)
             frame = buffer.tobytes()
