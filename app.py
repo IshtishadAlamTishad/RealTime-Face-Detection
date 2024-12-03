@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
-model = load_model('T:/CodeBase/FullStackMLWeb/WebAIProject/ObjectDetection/models/trainedModel.h5')
+model = load_model('models/trainedModel.h5')
 
 class_names = ['Touhid', 'Tishad', 'Shimla', 'Abir']
 
