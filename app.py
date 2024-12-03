@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
-model = load_model('models/trainedModel.h5')
+model = load_model('T:/CodeBase/FullStackMLWeb/WebAIProject/ObjectDetection/models/trainedModel.h5')
 
 class_names = ['Touhid', 'Tishad', 'Shimla', 'Abir']
 
@@ -40,9 +40,9 @@ def gen_frames():
                 prediction = model.predict(face_img)
                 max_index = np.argmax(prediction[0])  
                 predicted_class = class_names[max_index]
-        
+                confidence = prediction[0][max_index] * 100 
 
-                label = f"{predicted_class}"
+                label = f"{predicted_class} ({confidence:.2f}%)"
                 cv2.putText(frame, label, (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
 
             ret, buffer = cv2.imencode('.jpg', frame)
